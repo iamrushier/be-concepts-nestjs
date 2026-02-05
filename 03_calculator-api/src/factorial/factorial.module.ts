@@ -10,6 +10,6 @@ import { SubtractService } from "src/subtract/subtract.service";
 @Module({
     imports: [MultiplyModule, SubtractModule],
     controllers: [FactorialController],
-    providers: [FactorialService, MultiplyService, SubtractService],
+    providers: [FactorialService], // MultiplyService, SubtractService
 })
 export class FactorialModule { }

@@ -4,6 +4,7 @@ import { MultiplyService } from './multiply.service';
 
 @Module({
   controllers: [MultiplyController],
-  providers: [MultiplyService]
+  providers: [MultiplyService],
+  exports: [MultiplyService]
 })
-export class MultiplyModule {}
+export class MultiplyModule { }

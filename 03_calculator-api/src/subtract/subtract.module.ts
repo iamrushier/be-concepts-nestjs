@@ -4,6 +4,7 @@ import { SubtractService } from './subtract.service';
 
 @Module({
   controllers: [SubtractController],
-  providers: [SubtractService]
+  providers: [SubtractService],
+  exports: [SubtractService]
 })
-export class SubtractModule {}
+export class SubtractModule { }
