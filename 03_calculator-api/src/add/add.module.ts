@@ -6,4 +6,4 @@ import { AddService } from './add.service';
   controllers: [AddController],
   providers: [AddService]
 })
-export class AddModule {}
+export class AddModule { }
