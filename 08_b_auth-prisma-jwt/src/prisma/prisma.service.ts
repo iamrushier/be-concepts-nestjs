@@ -1,0 +1,22 @@
+// auth-prisma-jwt/src/prisma/prisma.service.ts
+import { OnModuleDestroy, OnModuleInit } from "@nestjs/common";
+import { PrismaClient } from "generated/prisma/client";
+import { Injectable } from "@nestjs/common"
+import { PrismaPg } from "@prisma/adapter-pg";
+
+@Injectable()
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+    constructor() {
+        super({
+            adapter: new PrismaPg({
+                connectionString: process.env.DATABASE_URL
+            })
+        })
+    }
+    async onModuleInit() {
+        await this.$connect()
+    }
+    async onModuleDestroy() {
+        await this.$disconnect()
+    }
+}
