@@ -4,13 +4,18 @@ import * as bcrypt from "bcrypt"
 
 @Injectable()
 export class UsersService {
-    constructor(private readonly prisma: PrismaService) { }
+    constructor(private readonly prisma: PrismaService) {
+        console.log("user")
+    }
 
     async findByEmail(email: string) {
-        return this.prisma.user.findUnique({ where: { email } })
+        return await this.prisma.user.findUnique({ where: { email } })
     }
 
     async create(email: string, password: string, name?: string) {
+        if (!email) {
+            throw new Error('Email is required');
+        }
         const existing = await this.findByEmail(email)
         if (existing) throw new ConflictException(`User with email ${email} already exists`)
         const hashedPassword = await bcrypt.hash(password, 10)
