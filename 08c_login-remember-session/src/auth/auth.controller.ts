@@ -1,13 +1,14 @@
 import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import type { Request, Response } from 'express';
+import { RegisterDto } from './dtos/register.dto';
 
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) { }
 
     @Post("register")
-    async register(@Body() body) {
+    async register(@Body() body: RegisterDto) {
         return this.authService.register(body.email, body.password)
     }
 

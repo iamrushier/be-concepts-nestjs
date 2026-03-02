@@ -22,7 +22,8 @@ export class AuthService {
     async register(email: string, password: string) {
         const hashedPassword = await bcrypt.hash(password, 10)
         const user = this.userRepo.create({ email, password: hashedPassword })
-        return await this.userRepo.save(user)
+        const saved = await this.userRepo.save(user)
+        return { email: saved.email, id: saved.id }
     }
 
     async login(email: string, password: string, rememberMe: boolean) {

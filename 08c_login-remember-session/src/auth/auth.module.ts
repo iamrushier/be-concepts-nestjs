@@ -14,7 +14,7 @@ import { AuthController } from './auth.controller';
         })
     ],
     exports: [RefreshToken],
-    providers: [AuthService],
+    providers: [AuthService, RefreshToken],
     controllers: [AuthController]
 })
 export class AuthModule { }
