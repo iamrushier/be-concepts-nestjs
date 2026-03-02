@@ -50,4 +50,39 @@ export class AuthService {
         // return access token and refresh token
         return { accessToken, refreshToken: rawRefreshToken }
     }
+
+    async refresh(rawToken: string) {
+        // Fetch all tokens and related users entity ( performs join)
+        const tokens = await this.refreshTokenRepo.find({ where: { revoked: false }, relations: ['user'] })
+        let found: RefreshToken | null = null
+        for (const token of tokens) { // One by one compare the hash match
+            if (await bcrypt.compare(rawToken, token.hashedToken)) {
+                found = token
+                break
+            }
+        }
+        if (!found || found.expiresAt < new Date()) {
+            throw new UnauthorizedException()
+        }
+
+        // Revoke older token
+        found.revoked = true
+        await this.refreshTokenRepo.save(found)
+
+        // Generate new token and save hash to db
+        const newRaw = this.generateRefreshToken()
+        const newHash = await bcrypt.hash(newRaw, 10)
+        await this.refreshTokenRepo.save({
+            hashedToken: newHash,
+            expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            user: found.user
+        })
+
+        // Generate new access token
+        const newAccess = this.jwtService.sign(
+            { sub: found.user.id },
+            { expiresIn: "15m" }
+        )
+        return { accessToken: newAccess, refreshToken: newRaw }
+    }
 }
